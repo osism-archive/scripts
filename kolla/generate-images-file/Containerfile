@@ -1,0 +1,19 @@
+FROM ubuntu:20.04
+
+ARG OPENSTACK_VERSION=master
+
+COPY main.py /main.py
+COPY requirements.txt /requirements.txt
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      git \
+      python3-dev \
+      python3-pip
+
+RUN if [ $OPENSTACK_VERSION = "master" ]; then git clone https://github.com/openstack/kolla-ansible /repository; fi \
+    && if [ $OPENSTACK_VERSION != "master" ]; then git clone -b stable/$OPENSTACK_VERSION https://github.com/openstack/kolla-ansible /repository; fi
+
+RUN pip3 install --no-cache-dir -r /requirements.txt
+
+CMD ["python3", "/main.py"]
