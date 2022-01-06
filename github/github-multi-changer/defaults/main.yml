@@ -1,0 +1,7 @@
+---
+repository_destination: /Users/foobar/codetmp
+search_word: "betacloud"
+replace_word: "osism"
+branch_name: "refactor/change-company-name"
+commit_headline: "refactoring: change company name"
+commit_body: "partly: osism/issues#xx"

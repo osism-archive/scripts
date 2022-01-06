@@ -1,0 +1,54 @@
+---
+- name: Create repository dir
+  ansible.builtin.file:
+    path: "{{ repository_destination }}"
+    state: directory
+
+- name: Find all osism-github-repositories
+  ansible.builtin.command:
+    cmd: /opt/homebrew/bin/gh repo list -L 2 --no-archived --json sshUrl,name osism
+  register: repository_url_list
+
+- name: Clone all repositories
+  ansible.builtin.git:
+    repo: "{{ item['sshUrl'] }}"
+    dest: "{{ repository_destination }}/{{ item['name'] }}"
+  loop: "{{ repository_url_list['stdout'] }}"
+
+- name: Search files
+  ansible.builtin.shell:
+    cmd: "grep -r -l -e '{{ search_word }}' {{ repository_destination }}/*"
+  register: files_to_change
+
+- name: Create branch
+  ansible.builtin.shell:
+    cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git checkout -b {{ branch_name }}"
+  loop: "{{ repository_url_list['stdout'] }}"
+
+- name: Change files
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: "{{ search_word }}"
+    replace: "{{ replace_word }}"
+  loop: "{{ files_to_change['stdout_lines'] }}"
+
+- name: Add changes
+  ansible.builtin.shell:
+    cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git add ."
+  loop: "{{ repository_url_list['stdout'] }}"
+
+- name: Create commit
+  ansible.builtin.shell:
+    cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git commit -s -m {{ commit_headline }} -m {{ commit_body }}"
+  loop: "{{ repository_url_list['stdout'] }}"
+
+- name: Creat pull requests
+  ansible.builtin.shell:
+    cmd: "cd {{ repository_destination }}/{{ item['name'] }}; gh pr create -f"
+  loop: "{{ repository_url_list['stdout'] }}"
+  ignore_errors: true
+
+- name: Remove repositories local
+  ansible.builtin.file:
+    path: "{{ repository_destination }}"
+    state: absent
