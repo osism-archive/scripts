@@ -54,11 +54,11 @@ def check_for_empty_line(line):
 
 def check_for_modes(line):
     return (
-                line == "  + create" or
-                line == "  ~ update in-place" or
-                line == "  - destroy" or
-                line == "-/+ destroy and then create replacement"
-           )
+        line == "  + create" or
+        line == "  ~ update in-place" or
+        line == "  - destroy" or
+        line == "-/+ destroy and then create replacement"
+    )
 
 
 def check_for_refresh(line):
@@ -80,11 +80,11 @@ def check_for_resource_headline(line):
 
 def check_for_resource_startline(line):
     return (
-                line.startswith("  +") or
-                line.startswith("  ~") or
-                line.startswith("  -") or
-                line.startswith("-/+")
-           )
+        line.startswith("  +") or
+        line.startswith("  ~") or
+        line.startswith("  -") or
+        line.startswith("-/+")
+    )
 
 
 def check_for_resource_paramter(line):
