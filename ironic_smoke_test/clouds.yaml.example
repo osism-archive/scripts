@@ -1,0 +1,11 @@
+---
+clouds:
+  testbed:
+   auth:
+     username: admin
+     project_name: admin
+     auth_url: http://192.168.34.10:5000/v3
+     project_domain_name: default
+     user_domain_name: default
+   identity_api_version: 3
+   verify: false
