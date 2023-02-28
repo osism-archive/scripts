@@ -3,11 +3,13 @@
   ansible.builtin.file:
     path: "{{ repository_destination }}"
     state: directory
+    mode: 0640
 
 - name: Find all osism-github-repositories
   ansible.builtin.command:
     cmd: /opt/homebrew/bin/gh repo list -L 2 --no-archived --json sshUrl,name osism
   register: repository_url_list
+  changed_when: false
 
 - name: Clone all repositories
   ansible.builtin.git:
@@ -19,11 +21,13 @@
   ansible.builtin.shell:
     cmd: "grep -r -l -e '{{ search_word }}' {{ repository_destination }}/*"
   register: files_to_change
+  changed_when: false
 
 - name: Create branch
   ansible.builtin.shell:
     cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git checkout -b {{ branch_name }}"
   loop: "{{ repository_url_list['stdout'] }}"
+  changed_when: true
 
 - name: Change files
   ansible.builtin.replace:
@@ -36,17 +40,20 @@
   ansible.builtin.shell:
     cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git add ."
   loop: "{{ repository_url_list['stdout'] }}"
+  changed_when: true
 
 - name: Create commit
   ansible.builtin.shell:
     cmd: "cd {{ repository_destination }}/{{ item['name'] }}; git commit -s -m {{ commit_headline }} -m {{ commit_body }}"
   loop: "{{ repository_url_list['stdout'] }}"
+  changed_when: true
 
-- name: Creat pull requests
+- name: Create pull requests
   ansible.builtin.shell:
     cmd: "cd {{ repository_destination }}/{{ item['name'] }}; gh pr create -f"
   loop: "{{ repository_url_list['stdout'] }}"
   ignore_errors: true
+  changed_when: true
 
 - name: Remove repositories local
   ansible.builtin.file:
