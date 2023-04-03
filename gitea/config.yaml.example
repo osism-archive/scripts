@@ -1,7 +1,0 @@
-gitea_token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-gitea_owner: gitea_admin
-gitea_api_url: http://1.2.3.4.nip.io/api/v1
-gitea_api_ssl: False
-github_pat: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-github_org: osism
-
