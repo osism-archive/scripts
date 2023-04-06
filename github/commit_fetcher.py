@@ -1,4 +1,6 @@
 import csv
+import getpass
+import os
 
 from datetime import datetime, timedelta
 from github import Github
@@ -17,7 +19,9 @@ until = datetime.strptime(until, '%Y-%m-%d')
 # Github Daten abfragen
 org = input("Github organization [osism]: ") or "osism"
 user = input("Github username [tibeer]: ") or "tibeer"
-token = input("Github token: ")
+token = os.getenv("GH_TOKEN", "")
+if token == "":
+    token = getpass.getpass(prompt="Github token: ")
 gh_handle = Github(login_or_token=token)
 org_handle = gh_handle.get_organization(org)
 user_handle = gh_handle.get_user(user)
