@@ -48,7 +48,7 @@
   loop: "{{ repository_url_list['stdout'] }}"
   changed_when: true
 
-- name: Create pull requests
+- name: Create pull requests  # noqa: ignore-errors
   ansible.builtin.shell:
     cmd: "cd {{ repository_destination }}/{{ item['name'] }}; gh pr create -f"
   loop: "{{ repository_url_list['stdout'] }}"

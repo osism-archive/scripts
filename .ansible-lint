@@ -3,12 +3,8 @@ use_default_rules: true
 rulesdir:
   - ./.ansible-lint-rules/
 skip_list:
-  - parser-error  # AnsibleParserError.
-  - var-spacing  # Variables should have spaces before and after: {{ var_name }}.
-  - fqcn-builtins
   - yaml
-  - latest[git]
-  - ignore-errors
+  - latest[git]  # Handled like package_latest. We decide to skip this rules, because we want to use the latest images.
 # DO NOT DELETE THE WARNLIST! It is required for our custom rules!
 # If this isn't there our custom rules will only through a warning and wont generate a failure!:
 warn_list:
